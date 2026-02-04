@@ -1,0 +1,40 @@
+***********************************
+*********************************** VPC CREATE
+
+resource "aws_vpc" "vpc" {
+    cidr_block = "192.168.0.0/16"
+    tags = {
+        Name = "vpc_cdec_b2"
+    }
+}
+
+resource "aws_subnet" "pub" {
+    vpc_id = aws_vpc.vpc.id
+    cidr_block = "192.168.0.0/20"
+    availability_zone = "us-west-1a"
+    map_public_ip_on_launch = true
+    tags = {
+        Name = "public_subnet"
+    }
+
+}
+
+resource "aws_internet_gateway" "igw" {
+    vpc_id = aws_vpc.vpc.id
+    tags = {
+        Name = "my-igw"
+    }
+}
+
+resource "aws_route_table" "rt-1" {
+    vpc_id = aws_vpc.vpc.id
+    tags = {
+        Name = "my-rt"
+    }
+
+    route {
+        gateway_id = aws_internet_gateway.igw.vpc_id
+        cidr_block = "0.0.0.0/0"
+
+    }
+}
