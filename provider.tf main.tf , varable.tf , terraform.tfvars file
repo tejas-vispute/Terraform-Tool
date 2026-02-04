@@ -1,0 +1,60 @@
+
+VIM provider.tf
+provider "aws" {
+  region     = "us-west-1"
+  access_key = "AKIAZ6K3A6PGSKH32SFM"
+  secret_key = "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"
+}
+
+**********************************
+**********************************
+
+VIM terraform.tfvars
+
+ami_id        = "ami-0290e60ec230db1e4"
+instance_type = "t3.micro"
+key_name      = "devanand"
+
+********************************
+************************************
+
+VIM variable.tf
+
+variable "ami_id" {
+  description = "value"
+  type        = string
+
+}
+
+variable "instance_type" {
+  type = string
+
+}
+
+variable "key_name" {
+  type = string
+
+}
+
+*****************************
+************************************
+
+VIM main.tf
+
+resource "aws_instance" "pub" {
+  ami           = var.ami_id
+  instance_type = var.instance_type
+  key_name      = var.key_name
+  user_data     = <<-EOF
+    #!/bin/bash
+    sudo -i 
+    apt update -y
+    apt install apache2 -y
+    systemctl start apache2
+    systemctl enable apache2
+    echo "welcome in india to" > /var/www/html/index.html
+    EOF
+  tags = {
+    Name = "devanand achyutrao dahatonde"
+  }
+}
